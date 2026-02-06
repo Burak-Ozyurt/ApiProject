@@ -9,7 +9,7 @@ namespace ApiProject.WebApi.Controllers
     [ApiController]
     public class CategoriesController : ControllerBase
     {
-        private readonly Context.ApiContext _context;
+        private readonly ApiContext _context;
 
         public CategoriesController(ApiContext context)
         {

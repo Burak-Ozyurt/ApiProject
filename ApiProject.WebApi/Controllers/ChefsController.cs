@@ -9,7 +9,7 @@ namespace ApiProject.WebApi.Controllers
     [ApiController]
     public class ChefsController : ControllerBase
     {
-        private readonly Context.ApiContext _context;
+        private readonly ApiContext _context;
 
         public ChefsController(ApiContext context)
         {
