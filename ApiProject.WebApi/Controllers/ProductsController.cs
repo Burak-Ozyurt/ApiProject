@@ -5,6 +5,7 @@ using AutoMapper;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ApiProject.WebApi.Controllers
 {
@@ -91,6 +92,14 @@ namespace ApiProject.WebApi.Controllers
             _context.Products.Add(value);
             _context.SaveChanges();
             return Ok("Ekleme İşlemi Başarılı");
+        }
+
+        [HttpGet("ProductListWithCategory")]
+
+        public IActionResult ProductListWithCategory()
+        {
+            var value = _context.Products.Include(x=>x.Category).ToList();
+            return Ok(_mapper.Map<List<ResultProductWithCategoryDto>>(value));
         }
     }
 }
