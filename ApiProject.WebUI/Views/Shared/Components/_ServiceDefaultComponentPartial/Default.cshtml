@@ -1,4 +1,6 @@
-﻿<section id="why-us" class="why-us section light-background">
+﻿@model List<ApiProject.WebUI.Dtos.ServiceDtos.ResultServiceDto>
+
+<section id="why-us" class="why-us section light-background">
 
     <div class="container">
 
@@ -19,30 +21,16 @@
             <div class="col-lg-8 d-flex align-items-stretch">
                 <div class="row gy-4" data-aos="fade-up" data-aos-delay="200">
 
+                    @foreach (var item in Model)
+                    {
                     <div class="col-xl-4">
                         <div class="icon-box d-flex flex-column justify-content-center align-items-center">
-                            <i class="bi bi-clipboard-data"></i>
-                            <h4>Özenle Seçilen Doğal Malzemeler</h4>
-                            <p>En taze ve doğal ürünleri seçiyor, hijyen kurallarından asla taviz vermeden her tabağı özenle hazırlıyoruz.</p>
+                            <i class="@item.IconUrl"></i>
+                            <h4>@item.Title</h4>
+                            <p>@item.Description</p>
                         </div>
                     </div><!-- End Icon Box -->
-
-                    <div class="col-xl-4" data-aos="fade-up" data-aos-delay="300">
-                        <div class="icon-box d-flex flex-column justify-content-center align-items-center">
-                            <i class="bi bi-gem"></i>
-                            <h4>Ayrıcalıklı ve Şık Sunumlar</h4>
-                            <p>Misafirlerimize sadece yemek değil, şık bir atmosferde kendilerini özel hissedecekleri bir deneyim sunuyoruz.</p>
-                        </div>
-                    </div><!-- End Icon Box -->
-
-                    <div class="col-xl-4" data-aos="fade-up" data-aos-delay="400">
-                        <div class="icon-box d-flex flex-column justify-content-center align-items-center">
-                            <i class="bi bi-inboxes"></i>
-                            <h4>Eşsiz ve Özgün Reçeteler</h4>
-                            <p>Geleneksel tatları modern yorumlarla birleştirerek, başka yerde bulamayacağınız imza lezzetler oluşturuyoruz.</p>
-                        </div>
-                    </div><!-- End Icon Box -->
-
+                    }
                 </div>
             </div>
 
