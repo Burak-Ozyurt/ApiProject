@@ -2,6 +2,7 @@
 @{
     ViewData["Title"] = "CategoryList";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    int count = 0;
 }
 
 <h1>CategoryList</h1>
@@ -28,8 +29,9 @@
                                 <tbody>
                                     @foreach (var item in Model)
                                 {
+                                    count++;
                                     <tr>
-                                        <th scope="row">@item.CategoryId</th>
+                                        <th scope="row">@count</th>
                                         <td>@item.CategoryName</td>
                                         <td><a href="/Category/DeleteCategory/@item.CategoryId" class="btn btn-danger">Sil</a></td>
                                         <td><a href="/Category/UpdateCategory/@item.CategoryId" class="btn btn-success">Güncelle</a></td>
