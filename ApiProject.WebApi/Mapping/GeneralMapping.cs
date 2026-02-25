@@ -37,6 +37,7 @@ namespace ApiProject.WebApi.Mapping
             CreateMap<Notification, UpdateNotificationDto>().ReverseMap();
 
             CreateMap<Category, CreateCategoryDto>().ReverseMap();
+            CreateMap<Category, UpdateCategoryDto>().ReverseMap();
 
         }
     }
