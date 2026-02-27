@@ -1,6 +1,7 @@
 ﻿using ApiProject.WebApi.Dtos.AboutDtos;
 using ApiProject.WebApi.Dtos.CategoryDtos;
 using ApiProject.WebApi.Dtos.FeatureDtos;
+using ApiProject.WebApi.Dtos.ImageDtos;
 using ApiProject.WebApi.Dtos.MessageDtos;
 using ApiProject.WebApi.Dtos.NotificationDtos;
 using ApiProject.WebApi.Dtos.ProductDtos;
@@ -50,6 +51,11 @@ namespace ApiProject.WebApi.Mapping
             CreateMap<Reservation, UpdateReservationDto>().ReverseMap();
             CreateMap<Reservation, CreateReservationDto>().ReverseMap();
             CreateMap<Reservation, GetReservationByIdDto>().ReverseMap();
+
+            CreateMap<Image, ResultImageDto>().ReverseMap();
+            CreateMap<Image, CreateImageDto>().ReverseMap();
+            CreateMap<Image, UpdateImageDto>().ReverseMap();
+            CreateMap<Image, GetImageByIdDto>().ReverseMap();
 
         }
     }
