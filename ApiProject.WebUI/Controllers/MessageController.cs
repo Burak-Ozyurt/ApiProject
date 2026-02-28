@@ -74,5 +74,78 @@ namespace ApiProject.WebUI.Controllers
             var responseMessage = await client.PutAsync("https://localhost:7123/api/Messages", stringContent);
             return RedirectToAction("MessageList");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> AnswerMessageWithAI(int id, string prompt)
+        {
+            var client = _httpClientFactory.CreateClient();
+            var responseMessage = await client.GetAsync("https://localhost:7123/api/Messages/GetMessage?id=" + id);
+            var jsonData = await responseMessage.Content.ReadAsStringAsync();
+            var value = JsonConvert.DeserializeObject<GetMessageByIdDto>(jsonData);
+            prompt = value.MessageDetails;
+
+
+            var apiKey = "";
+
+            // API Key'i URL'den çıkardık, daha temiz bir URL oldu.
+            var url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+
+            using var client2 = new HttpClient();
+
+            // Hocanın Bearer token eklediği gibi, biz de Gemini'nin beklediği yetkilendirme başlığını (Header) ekliyoruz.
+            client2.DefaultRequestHeaders.Add("x-goog-api-key", apiKey);
+
+            // Gemini'nin beklediği JSON yapısı (Hocanın requestData yapısına benzer şekilde)
+            var requestData = new
+            {
+                contents = new[]
+                {
+                    new
+                    {
+                        parts = new[]
+                        {
+                            new { text = "Sen bir restoran için kullanıcıların göndermiş oldukları mesajları detaylı ve olabildiğince olumlu, müşteri memnunyeti gözeten cevaplar veren bir yapay zeka aracısın. Amacımız kullanıcı tarafından gönderilen mesajlara en olumlu ve mantıklı cevapları sunabilmek. " + prompt }
+                        }
+                    }
+                }
+            };
+
+            // Hocanın kodundaki gibi PostAsJsonAsync kullanıyoruz (Manuel StringContent ve Serialize işlemine gerek kalmadı)
+            var response = await client2.PostAsJsonAsync(url, requestData);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // dynamic yerine hocanın yaptığı gibi kendi yazdığımız sınıfları (class) kullanarak veriyi okuyoruz
+                var result = await response.Content.ReadFromJsonAsync<GeminiResponse>();
+
+                var content = result.candidates[0].content.parts[0].text;
+                ViewBag.answerAI = content;
+            }
+            else
+            {
+                ViewBag.answerAI = "Bir hata oluştu: " + response.StatusCode;
+            }
+            return View(value);
+
+        }
+        public class GeminiResponse
+        {
+            public List<Candidate> candidates { get; set; }
+        }
+
+        public class Candidate
+        {
+            public Content content { get; set; }
+        }
+
+        public class Content
+        {
+            public List<Part> parts { get; set; }
+        }
+
+        public class Part
+        {
+            public string text { get; set; }
+        }
     }
 }

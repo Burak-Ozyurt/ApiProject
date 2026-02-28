@@ -33,7 +33,7 @@ namespace ApiProject.WebUI.Controllers
                     {
                         parts = new[]
                         {
-                            new { text = "Sen bir restoran için yemek önerilerini yapan bir yapay zeka aracısın. Amacımız kullanıcı tarafından girilen malzemelere göre yemek tarifi önerisinde bulunmak. Malzemeler: " + prompt }
+                            new { text = "Sen bir restoran için yemek önerilerini yapan bir yapay zeka aracısın. Amacımız kullanıcı tarafından girilen malzemelere göre yemek tarifi önerisinde bulunmak. " + prompt }
                         }
                     }
                 }
@@ -58,7 +58,6 @@ namespace ApiProject.WebUI.Controllers
             return View("CreateRecipeWithAI");
         }
 
-        // --- HOCANIN OpenAIResponse SINIFLARINA KARŞILIK GELEN GEMINI SINIFLARI ---
         public class GeminiResponse
         {
             public List<Candidate> candidates { get; set; }
