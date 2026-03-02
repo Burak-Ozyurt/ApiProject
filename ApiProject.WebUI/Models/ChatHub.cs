@@ -9,7 +9,7 @@ namespace ApiProject.WebUI.Models
     public class ChatHub:Hub
     {
         private const string apiKey = "";
-        private const string modelGemini = "";
+        private const string modelGemini = "gemini-2.5-flash";
         private readonly IHttpClientFactory _httpClientFactory;
 
         public ChatHub(IHttpClientFactory httpClientFactory)
@@ -64,7 +64,7 @@ namespace ApiProject.WebUI.Models
                 temperature = 0.2
             };
 
-            using var req = new HttpRequestMessage(HttpMethod.Post, "");
+            using var req = new HttpRequestMessage(HttpMethod.Post, "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions");
             req.Content = new StringContent(JsonSerializer.Serialize(payload), Encoding.UTF8, "application/json");
 
             using var  resp = await client.SendAsync(req,HttpCompletionOption.ResponseHeadersRead,cancellationToken);

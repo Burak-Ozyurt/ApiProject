@@ -1,8 +1,15 @@
+using ApiProject.WebUI.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddHttpClient();
+builder.Services.AddSignalR();
+builder.Services.AddHttpClient("gemini", client =>
+{
+    client.BaseAddress = new Uri("https://gemini.googleapis.com/v1/");
+});
 
 builder.Services.AddControllersWithViews();
 
@@ -15,6 +22,8 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+app.MapHub<ChatHub>("/chathub");
 
 app.UseHttpsRedirection();
 app.UseRouting();
