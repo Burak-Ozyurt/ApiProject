@@ -100,7 +100,6 @@ namespace ApiProject.WebApi.Controllers
             DateTime today = DateTime.Today;
             DateTime fourMonthsAgo = today.AddMonths(-3);
 
-            // 1. SQL tarafında sadece gruplama ve veri çekme
             var rawData = _context.Reservations
                 .Where(r => r.ReservationDate >= fourMonthsAgo)
                 .GroupBy(r => new { r.ReservationDate.Year, r.ReservationDate.Month })
@@ -113,9 +112,8 @@ namespace ApiProject.WebApi.Controllers
                     Canceled = g.Count(x => x.ReservationStatus == "İptal Edildi")
                 })
                 .OrderBy(x => x.Year).ThenBy(x => x.Month)
-                .ToList(); // Burada SQL biter, veriler RAM’e alınır
+                .ToList(); 
 
-            // 2. Bellekte DTO'ya mapleme + tarih formatlama
             var result = rawData.Select(x => new ReservationChartDto
             {
                 Month = new DateTime(x.Year, x.Month, 1).ToString("MMM yyyy"),
