@@ -4,6 +4,7 @@ using ApiProject.WebApi.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiProject.WebApi.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    partial class ApiContextModelSnapshot : ModelSnapshot
+    [Migration("20260304092222_mig7")]
+    partial class mig7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -149,6 +152,9 @@ namespace ApiProject.WebApi.Migrations
                     b.Property<DateTime>("AssignDate")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ChefId")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DueDate")
                         .HasColumnType("datetime2");
 
@@ -169,30 +175,9 @@ namespace ApiProject.WebApi.Migrations
 
                     b.HasKey("EmployeeTaskId");
 
-                    b.ToTable("EmployeeTasks");
-                });
-
-            modelBuilder.Entity("ApiProject.WebApi.Entities.EmployeeTaskChef", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("ChefId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("EmployeeTaskId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
                     b.HasIndex("ChefId");
 
-                    b.HasIndex("EmployeeTaskId");
-
-                    b.ToTable("EmployeeTaskChefs");
+                    b.ToTable("EmployeeTask");
                 });
 
             modelBuilder.Entity("ApiProject.WebApi.Entities.Feature", b =>
@@ -475,23 +460,15 @@ namespace ApiProject.WebApi.Migrations
                     b.ToTable("YummYEvents");
                 });
 
-            modelBuilder.Entity("ApiProject.WebApi.Entities.EmployeeTaskChef", b =>
+            modelBuilder.Entity("ApiProject.WebApi.Entities.EmployeeTask", b =>
                 {
                     b.HasOne("ApiProject.WebApi.Entities.Chef", "Chef")
-                        .WithMany("EmployeeTaskChefs")
+                        .WithMany("EmployeeTasks")
                         .HasForeignKey("ChefId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ApiProject.WebApi.Entities.EmployeeTask", "EmployeeTask")
-                        .WithMany("EmployeeTaskChefs")
-                        .HasForeignKey("EmployeeTaskId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Chef");
-
-                    b.Navigation("EmployeeTask");
                 });
 
             modelBuilder.Entity("ApiProject.WebApi.Entities.Product", b =>
@@ -510,12 +487,7 @@ namespace ApiProject.WebApi.Migrations
 
             modelBuilder.Entity("ApiProject.WebApi.Entities.Chef", b =>
                 {
-                    b.Navigation("EmployeeTaskChefs");
-                });
-
-            modelBuilder.Entity("ApiProject.WebApi.Entities.EmployeeTask", b =>
-                {
-                    b.Navigation("EmployeeTaskChefs");
+                    b.Navigation("EmployeeTasks");
                 });
 #pragma warning restore 612, 618
         }
