@@ -1,43 +1,350 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "CreateRecipeWithAI";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<style>
+    .modern-card {
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        border: none;
+    }
+
+    .ai-container {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .message-block {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid #667eea;
+        transition: all 0.3s ease;
+    }
+
+        .message-block:hover {
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+        }
+
+    .recipe-block {
+        border-left-color: #fda085;
+    }
+
+    .error-block {
+        border-left-color: #f5576c;
+        background: #fff8f8;
+    }
+
+    .block-label {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.75rem;
+        color: #667eea;
+    }
+
+    .recipe-block .block-label {
+        color: #e07b50;
+    }
+
+    .styled-input {
+        width: 100%;
+        border: 1.5px solid #e8eaf0;
+        border-radius: 10px;
+        padding: 0.85rem 1.1rem;
+        font-size: 0.92rem;
+        color: #444;
+        background: #fafbff;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        outline: none;
+        font-family: inherit;
+    }
+
+        .styled-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+            background: white;
+        }
+
+        .styled-input::placeholder {
+            color: #bbb;
+        }
+
+    .recipe-output {
+        color: #444;
+        font-size: 0.93rem;
+        line-height: 1.8;
+    }
+
+        .recipe-output h1, .recipe-output h2, .recipe-output h3 {
+            color: #667eea;
+            margin-top: 1rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .recipe-output ul, .recipe-output ol {
+            padding-left: 1.4rem;
+        }
+
+        .recipe-output li {
+            margin-bottom: 0.3rem;
+        }
+
+        .recipe-output strong {
+            color: #333;
+        }
+
+        .recipe-output hr {
+            border-color: #f0f0f0;
+            margin: 1rem 0;
+        }
+
+    .actions-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .modern-btn {
+        padding: 0.75rem 1.8rem;
+        border-radius: 10px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+        .modern-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .modern-btn:active {
+            transform: translateY(0);
+        }
+
+    .btn-generate {
+        background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+        color: white;
+    }
+
+    .btn-back {
+        background: #f0f0f0;
+        color: #666;
+        padding: 0.65rem 1.4rem;
+        font-size: 0.88rem;
+    }
+
+        .btn-back:hover {
+            background: #e5e5e5;
+            color: #444;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+    .ai-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: linear-gradient(135deg, #f6d36520 0%, #fda08520 100%);
+        border: 1px solid #fda08555;
+        color: #e07b50;
+        border-radius: 20px;
+        padding: 0.3rem 0.9rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+
+    .dot-pulse {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #fda085;
+        display: inline-block;
+        animation: pulse 1.4s infinite;
+    }
+
+    .tags-hint {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-top: 0.75rem;
+    }
+
+    .tag-chip {
+        background: #f8f9ff;
+        border: 1px solid #e0e4f5;
+        color: #667eea;
+        border-radius: 20px;
+        padding: 0.25rem 0.75rem;
+        font-size: 0.78rem;
+        cursor: pointer;
+        transition: all 0.2s;
+        user-select: none;
+    }
+
+        .tag-chip:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+    @@keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.4;
+            transform: scale(0.85);
+        }
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .recipe-block {
+        animation: fadeIn 0.4s ease;
+    }
+
+    @@media (max-width: 768px) {
+        .ai-container {
+            padding: 1rem;
+        }
+
+        .actions-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
 <section class="section">
     <div class="section-body">
         <div class="row">
-            <div class="col-12 col-md-12 col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Gemini İle Yapay Zeka Destekli Yemek Tarifi Önerisi</h4>
-                    </div>
-                    <div class="card-body">
-                        <form method="post">
-                            <label>Elinizdeki Malzemeler ve Anahtar Kelimeler</label>
-                            <input type="text" name="prompt" class="form-control" />
-                            <br />
-                            <button class="btn btn-primary">Tarif Önerisi Oluştur</button>
-                        </form>
-                        <br /> <br />
-                        @if (ViewBag.Recipe != null)
-                        {
-                            <hr />
-                            <h5>Oluşturulan AI Yemek Tarifi Önerisi</h5>
-                            @Html.Raw(ViewBag.Recipe.ToString())
-                        }
+            <div class="col-12">
+                <div class="card modern-card">
 
-                        @if (ViewBag.Error != null)
-                        {
-                            <hr />
-                            <div class="alert alert-danger">
-                                @ViewBag.Error
-                            </div>
-                        }
+                    <div class="card-header" style="background: white; border-bottom: 2px solid #f0f0f0; border-radius: 15px 15px 0 0;">
+                        <h4 style="color: #667eea; font-weight: 700; margin: 0;">
+                            <i class="fas fa-utensils" style="margin-right: 10px;"></i>
+                            Gemini İle Yemek Tarifi Önerisi
+                        </h4>
+                        <div class="card-header-action">
+                            <span class="ai-badge">
+                                <span class="dot-pulse"></span>
+                                AI Aktif
+                            </span>
+                        </div>
                     </div>
+
+                    <div class="card-body" style="padding: 0;">
+                        <div class="ai-container">
+
+                            <form method="post">
+                                <div class="message-block">
+                                    <div class="block-label">
+                                        <i class="fas fa-carrot"></i>
+                                        Malzemeler ve Anahtar Kelimeler
+                                    </div>
+                                    <input type="text"
+                                           name="prompt"
+                                           class="styled-input"
+                                           placeholder="örn: tavuk, patates, zeytinyağı, fırında..." />
+                                    <div class="tags-hint">
+                                        <span class="tag-chip" onclick="appendTag('vejetaryen')">🥦 Vejetaryen</span>
+                                        <span class="tag-chip" onclick="appendTag('pratik tarif')">⚡ Pratik</span>
+                                        <span class="tag-chip" onclick="appendTag('sağlıklı')">🥗 Sağlıklı</span>
+                                        <span class="tag-chip" onclick="appendTag('tatlı')">🍰 Tatlı</span>
+                                        <span class="tag-chip" onclick="appendTag('çorba')">🍲 Çorba</span>
+                                        <span class="tag-chip" onclick="appendTag('makarna')">🍝 Makarna</span>
+                                    </div>
+                                    <br />
+                                    <div class="actions-row">
+                                        <a href="javascript:history.back()" class="modern-btn btn-back">
+                                            <i class="fas fa-arrow-left"></i>
+                                            Geri Dön
+                                        </a>
+                                        <button type="submit" class="modern-btn btn-generate">
+                                            <i class="fas fa-magic"></i>
+                                            Tarif Önerisi Oluştur
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            @if (ViewBag.Recipe != null)
+                            {
+                                <div class="message-block recipe-block">
+                                    <div class="block-label">
+                                        <i class="fas fa-hat-chef"></i>
+                                        Oluşturulan AI Yemek Tarifi
+                                    </div>
+                                    <div class="recipe-output">
+                                        @Html.Raw(ViewBag.Recipe.ToString())
+                                    </div>
+                                </div>
+                            }
+
+                            @if (ViewBag.Error != null)
+                            {
+                                <div class="message-block error-block">
+                                    <div class="block-label" style="color: #f5576c;">
+                                        <i class="fas fa-exclamation-circle"></i>
+                                        Hata Oluştu
+                                    </div>
+                                    <div style="color: #c0392b; font-size: 0.9rem;">
+                                        @ViewBag.Error
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+
+                    <div class="card-footer" style="background: white; border-top: 2px solid #f0f0f0;">
+                        <div style="color: #999; font-size: 0.875rem;">
+                            <i class="fas fa-info-circle"></i>
+                            Malzemelerinizi girerek <strong style="color: #fda085;">AI destekli tarif önerisi</strong> alabilirsiniz
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </section>
 
+<script>
+    function appendTag(tag) {
+        const input = document.querySelector('input[name="prompt"]');
+        const current = input.value.trim();
+        input.value = current ? current + ', ' + tag : tag;
+        input.focus();
+    }
+</script>

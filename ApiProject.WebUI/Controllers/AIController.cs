@@ -29,7 +29,7 @@ namespace ApiProject.WebUI.Controllers
                     {
                         parts = new[]
                         {
-                            new { text = "Sen bir restoran için yemek önerilerini yapan bir yapay zeka aracısın. Amacımız kullanıcı tarafından girilen malzemelere göre yemek tarifi önerisinde bulunmak. " + prompt }
+                            new { text = "Sen bir restoran için yemek önerilerini yapan bir yapay zeka aracısın. Amacımız kullanıcı tarafından girilen malzemelere göre yemek tarifi önerisinde bulunmak. 2 tane tarif öner. " + prompt }
                         }
                     }
                 }

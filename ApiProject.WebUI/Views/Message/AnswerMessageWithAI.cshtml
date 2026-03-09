@@ -4,28 +4,258 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<style>
+    .modern-card {
+        border-radius: 15px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+        border: none;
+    }
+
+    .ai-container {
+        padding: 2rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .message-block {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid #667eea;
+        transition: all 0.3s ease;
+    }
+
+        .message-block:hover {
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.15);
+        }
+
+    .ai-block {
+        border-left-color: #43e97b;
+    }
+
+    .block-label {
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        margin-bottom: 0.75rem;
+        color: #667eea;
+    }
+
+    .ai-block .block-label {
+        color: #2ecc71;
+    }
+
+    .block-label i {
+        font-size: 1rem;
+    }
+
+    .styled-textarea {
+        width: 100%;
+        border: 1.5px solid #e8eaf0;
+        border-radius: 10px;
+        padding: 1rem 1.1rem;
+        font-size: 0.92rem;
+        color: #444;
+        resize: vertical;
+        min-height: 130px;
+        background: #fafbff;
+        transition: border-color 0.2s, box-shadow 0.2s;
+        outline: none;
+        font-family: inherit;
+        line-height: 1.6;
+    }
+
+        .styled-textarea:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.12);
+            background: white;
+        }
+
+    .ai-block .styled-textarea:focus {
+        border-color: #43e97b;
+        box-shadow: 0 0 0 3px rgba(67, 233, 123, 0.12);
+    }
+
+    .ai-loading {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        color: #2ecc71;
+        font-size: 0.85rem;
+        margin-top: 0.5rem;
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .modern-btn {
+        padding: 0.65rem 1.4rem;
+        border-radius: 10px;
+        font-size: 0.88rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        text-decoration: none;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+        .modern-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .modern-btn:active {
+            transform: translateY(0);
+        }
+
+    .btn-send {
+        background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        color: white;
+        font-size: 0.95rem;
+        padding: 0.75rem 1.8rem;
+    }
+
+    .btn-back {
+        background: #f0f0f0;
+        color: #666;
+    }
+
+        .btn-back:hover {
+            background: #e5e5e5;
+            color: #444;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+    .actions-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 1rem;
+        padding-top: 0.5rem;
+    }
+
+    .ai-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.4rem;
+        background: linear-gradient(135deg, #43e97b20 0%, #38f9d720 100%);
+        border: 1px solid #43e97b55;
+        color: #1aad5a;
+        border-radius: 20px;
+        padding: 0.3rem 0.9rem;
+        font-size: 0.78rem;
+        font-weight: 600;
+    }
+
+    .dot-pulse {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #43e97b;
+        display: inline-block;
+        animation: pulse 1.4s infinite;
+    }
+
+    @@keyframes pulse {
+        0%, 100% {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        50% {
+            opacity: 0.4;
+            transform: scale(0.85);
+        }
+    }
+
+    @@media (max-width: 768px) {
+        .ai-container {
+            padding: 1rem;
+        }
+
+        .actions-row {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+</style>
+
 <section class="section">
     <div class="section-body">
         <div class="row">
-            <div class="col-12 col-md-12 col-lg-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h4>Gemini İle Otomatik Mesaj Yanıt Sayfası</h4>
-                    </div>
-                    <div class="card-body">
-                        <form method="post">
-                            <input type="hidden" asp-for="MessageId" />
-                            <label>Müşteri Mesajı</label>
-                            <textarea class="form-control" asp-for="MessageDetails" style="height: 150px !important;"></textarea>
-                            <br />
+            <div class="col-12">
+                <div class="card modern-card">
 
-                            <input type="hidden" asp-for="MessageId" />
-                            <label>Gemini Otomatik Cevabı</label>
-                            <textarea class="form-control" style="height: 150px !important;">@ViewBag.answerAI</textarea>
-                            <br />
-                            <button class="btn btn-primary">Cevabı Mail Olarak Gönder</button>
+                    <div class="card-header" style="background: white; border-bottom: 2px solid #f0f0f0; border-radius: 15px 15px 0 0;">
+                        <h4 style="color: #667eea; font-weight: 700; margin: 0;">
+                            <i class="fas fa-robot" style="margin-right: 10px;"></i>
+                            Gemini İle Otomatik Mesaj Yanıt
+                        </h4>
+                        <div class="card-header-action">
+                            <span class="ai-badge">
+                                <span class="dot-pulse"></span>
+                                AI Aktif
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="card-body" style="padding: 0;">
+                        <form method="post">
+                            <div class="ai-container">
+
+                                <input type="hidden" asp-for="MessageId" />
+
+                                {{!-- Müşteri Mesajı --}}
+                                <div class="message-block">
+                                    <div class="block-label">
+                                        <i class="fas fa-user-circle"></i>
+                                        Müşteri Mesajı
+                                    </div>
+                                    <textarea class="styled-textarea" asp-for="MessageDetails" readonly></textarea>
+                                </div>
+
+                                {{!-- Gemini Cevabı --}}
+                                <div class="message-block ai-block">
+                                    <div class="block-label">
+                                        <i class="fas fa-magic"></i>
+                                        Gemini Otomatik Cevabı
+                                    </div>
+                                    <textarea class="styled-textarea" name="aiAnswer" style="min-height: 160px;">@ViewBag.answerAI</textarea>
+                                </div>
+
+                                {{!-- Aksiyon Butonları --}}
+                                <div class="actions-row">
+                                    <a href="/Message/MessageList/" class="modern-btn btn-back">
+                                        <i class="fas fa-arrow-left"></i>
+                                        Geri Dön
+                                    </a>
+                                    <button type="submit" class="modern-btn btn-send">
+                                        <i class="fas fa-paper-plane"></i>
+                                        Cevabı Mail Olarak Gönder
+                                    </button>
+                                </div>
+
+                            </div>
                         </form>
                     </div>
+
+                    <div class="card-footer" style="background: white; border-top: 2px solid #f0f0f0;">
+                        <div style="color: #999; font-size: 0.875rem;">
+                            <i class="fas fa-info-circle"></i>
+                            Cevabı düzenleyip <strong style="color: #43e97b;">mail olarak gönderebilirsiniz</strong>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
